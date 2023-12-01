@@ -1,10 +1,7 @@
 import pyodbc
 import pandas as pd
-import io
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-from flask import Flask, render_template, Response
+from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -20,7 +17,6 @@ def grafico():
               
     connectionString = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
     conn = pyodbc.connect(connectionString) 
-
    
     sql_query = """
     select  Studente.Nome, Studente.Cognome, sum(monete.Numero_Monete) as Totale_Monete from poliseno.Studente
@@ -36,16 +32,15 @@ def grafico():
     
     labels = df.Nome
     dati = df.Totale_Monete
-    fig, ax = plt.subplots(figsize = (8,12))
+    fig, ax = plt.subplots(figsize = (12,12))
     plt.subplots_adjust(bottom=0.3)
     ax.bar(labels, dati,width = 0.5, color="green")
     ax.set_ylabel('Monete')
     ax.set_xlabel('Studenti')
     ax.set_title('Totale delle monete guadagnate in tutti i giochi')
+    fig.savefig('static\image\grafico.png')
 
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return render_template(table.html)
+    return render_template('table.html', table = df.to_html())
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=3245, debug=True)

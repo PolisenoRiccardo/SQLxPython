@@ -6,17 +6,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 
-def sign_up():
-    
-    server = '192.168.40.16'
-    database = 'zhao.filippo'
-    username = 'zhao.filippo'
-    password = 'xxx123##'
-    driver= '{SQL Server}'
-              
-    connectionString = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
-    conn = pyodbc.connect(connectionString) 
-
+def sign_in():
     return render_template("log.html") 
 
 
@@ -25,6 +15,7 @@ def sign_up():
 
 def grafico():
     user, password = request.args.get('user'), request.args.get('pasw')
+    
     if  user == 'admin' and password == 'xxx123#':
       server = '192.168.40.16'
       database = 'zhao.filippo'
@@ -61,6 +52,20 @@ def grafico():
     else:
       return render_template("errore.html") 
 
+@app.route('/registrazione', methods=['GET'])
+
+def sign_up():
+    
+    server = '192.168.40.16'
+    database = 'zhao.filippo'
+    username = 'zhao.filippo'
+    password = 'xxx123##'
+    driver= '{SQL Server}'
+              
+    connectionString = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+    conn = pyodbc.connect(connectionString) 
+
+    return render_template("registrazione.html") 
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=3245, debug=True)
